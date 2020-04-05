@@ -33,18 +33,20 @@ namespace Quartz.AttributesExtension.Configuration
                 .And.ParamName.Should().Be("jobKey");
         }
 
-        [Fact]
-        public void BuildJobKey_WithParams()
+        [Theory]
+        [InlineData("group1", "Jobs.group1.job1.param1.param2")]
+        [InlineData((string)null, "Jobs.job1.param1.param2")]
+        public void BuildJobKey_WithParams(string group, string expectedKey)
         {
             // ARRANGE
-            var jobKey = new JobKey("job1");
+            var jobKey = new JobKey("job1", group);
 
             // ACT
             var key = ConfigurationKeyBuilder.Build(jobKey, "param1", "param2");
 
             // ASSERT
             key.Should().NotBeNull();
-            key.Should().Be("Jobs.job1.param1.param2");
+            key.Should().Be(expectedKey);
         }
     }
 }

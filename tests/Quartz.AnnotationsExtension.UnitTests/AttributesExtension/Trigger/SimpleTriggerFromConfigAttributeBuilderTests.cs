@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Moq;
 using Quartz.AttributesExtension.Configuration;
+using Quartz.Impl.Triggers;
 using System;
 using Xunit;
 
@@ -8,7 +9,6 @@ namespace Quartz.AttributesExtension.Trigger
 {
     public class SimpleTriggerFromConfigAttributeBuilderTests
     {
-        private const string CronExpression = "0/10 * * * * ? *";
         private readonly JobKey jobKey = new JobKey("job1");
         private readonly Mock<IConfigurationProvider> configurationProviderMock;
         private readonly SimpleTriggerFromConfigAttributeBuilder subject;
@@ -30,8 +30,12 @@ namespace Quartz.AttributesExtension.Trigger
 
             // ASSERT
             trigger.Should().NotBeNull();
-            trigger.JobKey.Should().Be(jobKey);
-            // Unable to test the cron expression :-(
+            trigger.Should().BeOfType<SimpleTriggerImpl>();
+
+            var simpleTrigger = trigger as SimpleTriggerImpl;
+            simpleTrigger.JobKey.Should().Be(jobKey);
+            simpleTrigger.RepeatInterval.Should().Be(TimeSpan.FromSeconds(10));
+            simpleTrigger.RepeatCount.Should().Be(0); 
         }
 
         [Fact]

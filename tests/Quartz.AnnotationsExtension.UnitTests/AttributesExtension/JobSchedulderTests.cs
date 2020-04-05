@@ -7,13 +7,20 @@ using Xunit;
 
 namespace Quartz.AttributesExtension
 {
-    public sealed class JobSchedulderTests
+    public sealed class JobSchedulderTests : IDisposable
     {
         private readonly Mock<IScheduler> schedulerMock = new Mock<IScheduler>(MockBehavior.Strict);
         private readonly Mock<IJobDataBuilder> jobDataBuilderMock = new Mock<IJobDataBuilder>(MockBehavior.Strict);
         private readonly Mock<ITriggerBuilderFactory> triggerBuilderFactoryMock = new Mock<ITriggerBuilderFactory>(MockBehavior.Strict);
         private readonly Mock<ITriggerBuilder> triggerBuilderMock = new Mock<ITriggerBuilder>(MockBehavior.Strict);
         private readonly JobScheduler subject;
+
+        public void Dispose()
+        {
+            this.schedulerMock.VerifyAll();
+            this.jobDataBuilderMock.VerifyAll();
+            this.triggerBuilderFactoryMock.VerifyAll();
+        }
 
         public JobSchedulderTests()
         {
@@ -47,10 +54,6 @@ namespace Quartz.AttributesExtension
             this.subject.ScheduleJob<SampleJob>();
 
             // ASSERT
-            this.schedulerMock.VerifyAll();
-            this.jobDataBuilderMock.VerifyAll();
-            this.triggerBuilderFactoryMock.VerifyAll();
-
             void VerifyJobDetail(IJobDetail jobDetail)
             {
                 jobDetail.Should().NotBeNull();

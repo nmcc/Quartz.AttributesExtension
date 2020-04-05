@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Moq;
 using Quartz.AttributesExtension.Configuration;
+using Quartz.Impl.Triggers;
 using System;
 using Xunit;
 
@@ -30,8 +31,11 @@ namespace Quartz.AttributesExtension.Trigger
 
             // ASSERT
             trigger.Should().NotBeNull();
-            trigger.JobKey.Should().Be(jobKey);
-            // Unable to test the cron expression :-(
+            trigger.Should().BeOfType<CronTriggerImpl>();
+
+            var cronTrigger = trigger as CronTriggerImpl;
+            cronTrigger.JobKey.Should().Be(jobKey);
+            cronTrigger.CronExpressionString.Should().Be(CronExpression);
         }
 
         [Fact]

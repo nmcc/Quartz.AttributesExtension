@@ -24,19 +24,23 @@ namespace Quartz.AttributesExtension.Configuration
             key.Should().Be(expected);
         }
 
-        [Fact]
-        public void BuildTriggerKey_WithParams()
+        [Theory]
+        [InlineData("jobGroup", "triggerGroup", "Jobs.jobGroup.job1.triggerGroup.trigger1.param1.param2")]
+        [InlineData("jobGroup", (string)null, "Jobs.jobGroup.job1.trigger1.param1.param2")]
+        [InlineData((string)null, "triggerGroup", "Jobs.job1.triggerGroup.trigger1.param1.param2")]
+        [InlineData((string)null, (string)null, "Jobs.job1.trigger1.param1.param2")]
+        public void BuildTriggerKey_WithParams(string jobGroup, string triggerGroup, string expectedKey)
         {
             // ARRANGE
-            var jobKey = new JobKey("job1");
-            var triggerKey = new TriggerKey("trigger1");
+            var jobKey = new JobKey("job1", jobGroup);
+            var triggerKey = new TriggerKey("trigger1", triggerGroup);
 
             // ACT
             var key = ConfigurationKeyBuilder.Build(jobKey, triggerKey, "param1", "param2");
 
             // ASSERT
             key.Should().NotBeNull();
-            key.Should().Be("Jobs.job1.trigger1.param1.param2");
+            key.Should().Be(expectedKey);
         }
 
         [Fact]

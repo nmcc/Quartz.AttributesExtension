@@ -1,11 +1,12 @@
 ﻿using FluentAssertions;
 using Moq;
 using Quartz.AttributesExtension.Configuration;
+using System;
 using Xunit;
 
 namespace Quartz.AttributesExtension.JobData
 {
-    public sealed class JobDataBuilderTests
+    public sealed class JobDataBuilderTests : IDisposable
     {
         private readonly JobDataBuilder subject;
         private readonly Mock<IConfigurationProvider> configurationProviderMock;
@@ -14,6 +15,11 @@ namespace Quartz.AttributesExtension.JobData
         {
             this.configurationProviderMock = new Mock<IConfigurationProvider>(MockBehavior.Strict);
             this.subject = new JobDataBuilder(configurationProviderMock.Object);
+        }
+
+        public void Dispose()
+        {
+            this.configurationProviderMock.VerifyAll();
         }
 
         [Fact]
@@ -31,8 +37,6 @@ namespace Quartz.AttributesExtension.JobData
             jobDataMap.GetString(nameof(SampleJob.Param1)).Should().Be("Lorem");
             jobDataMap.GetInt(nameof(SampleJob.IntParam)).Should().Be(10);
             jobDataMap.GetBoolean(nameof(SampleJob.BoolParam)).Should().Be(true);
-
-            this.configurationProviderMock.VerifyAll();
         }
     }
 }

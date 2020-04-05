@@ -1,4 +1,6 @@
 ﻿using FluentAssertions;
+using Quartz.Impl.Triggers;
+using System;
 using Xunit;
 
 namespace Quartz.AttributesExtension.Trigger
@@ -16,8 +18,12 @@ namespace Quartz.AttributesExtension.Trigger
 
             // ASSERT
             trigger.Should().NotBeNull();
-            trigger.JobKey.Should().Be(jobKey);
-            // Unable to test the cron expression :-(
+            trigger.Should().BeOfType<SimpleTriggerImpl>();
+
+            var simpleTrigger = trigger as SimpleTriggerImpl;
+            simpleTrigger.JobKey.Should().Be(jobKey);
+            simpleTrigger.RepeatInterval.Should().Be(TimeSpan.FromSeconds(1));
+            simpleTrigger.RepeatCount.Should().Be(-1); // Forever
         }
     }
 }
