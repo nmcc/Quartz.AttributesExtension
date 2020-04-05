@@ -11,10 +11,10 @@ namespace Quartz.AttributesExtension.Trigger
         private readonly JobKey jobKey = new JobKey("job1");
 
         [Fact]
-        public void HappyPath()
+        public void RepeatForever()
         {
             // ACT
-            var trigger = subject.BuildTrigger(new SimpleTriggerAttribute(0, 0, 0, 1, true), jobKey);
+            var trigger = subject.BuildTrigger(new SimpleTriggerAttribute(0, 0, 0, 1), jobKey);
 
             // ASSERT
             trigger.Should().NotBeNull();
@@ -24,6 +24,22 @@ namespace Quartz.AttributesExtension.Trigger
             simpleTrigger.JobKey.Should().Be(jobKey);
             simpleTrigger.RepeatInterval.Should().Be(TimeSpan.FromSeconds(1));
             simpleTrigger.RepeatCount.Should().Be(-1); // Forever
+        }
+
+        [Fact]
+        public void RepeatCount()
+        {
+            // ACT
+            var trigger = subject.BuildTrigger(new SimpleTriggerAttribute(0, 0, 0, 1, repeatCount: 100), jobKey);
+
+            // ASSERT
+            trigger.Should().NotBeNull();
+            trigger.Should().BeOfType<SimpleTriggerImpl>();
+
+            var simpleTrigger = trigger as SimpleTriggerImpl;
+            simpleTrigger.JobKey.Should().Be(jobKey);
+            simpleTrigger.RepeatInterval.Should().Be(TimeSpan.FromSeconds(1));
+            simpleTrigger.RepeatCount.Should().Be(100);
         }
     }
 }

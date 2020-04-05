@@ -18,11 +18,15 @@ namespace Quartz.AttributesExtension.Trigger
 
             if (simpleTrigger.RepeatForever)
             {
-                triggerBuilder.WithSimpleSchedule(t => t.WithInterval(simpleTrigger.Interval).RepeatForever());
+                triggerBuilder.WithSimpleSchedule(t => t
+                    .WithInterval(simpleTrigger.Interval)
+                    .RepeatForever());
             }
             else
             {
-                triggerBuilder.WithSimpleSchedule(t => t.WithInterval(simpleTrigger.Interval));
+                triggerBuilder.WithSimpleSchedule(t => t
+                    .WithInterval(simpleTrigger.Interval)
+                    .WithRepeatCount(simpleTrigger.RepeatCount));
             }
 
             return triggerBuilder.Build();

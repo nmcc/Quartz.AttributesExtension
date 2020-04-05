@@ -72,13 +72,13 @@ When the Job or Trigger are added to the `DEFAULT` group, the `<Group>` can be o
 [Job(nameof(HelloJob))]
 public class HelloJob : IJob
 {
-    [JobData("Hello")] // hard coded parameter
+    [JobData("Hello")] // hard coded value
     public string Message { get; set; }
 
-    [JobData] // gets from Jobs.HelloJob.SomeNumber from configuration
+    [JobData] // gets value from Jobs.HelloJob.SomeNumber from configuration
     public int SomeNumber { get; set; }
 
-    [JobData] // gets from Jobs.HelloJob.SomeBoolean from configuration
+    [JobData] // getsvalue from Jobs.HelloJob.SomeBoolean from configuration
     public bool SomeBoolean { get; set; }
 }
 ```
@@ -119,11 +119,11 @@ public class HelloJob : IJob
 </appSettings>
 ```
 
-### Simple Trigger with hard configuration
+### Simple Trigger with hard configuration repeating forever
 
 ```csharp
 [Job(nameof(HelloJob))]
-[SimpleTrigger(days: 0, hours: 0, minutes: 0, seconds: 10, true, name: "SimpleTrigger")]
+[SimpleTrigger(days: 0, hours: 0, minutes: 0, seconds: 10, name: "SimpleTrigger_Forever")]
 public class HelloJob : IJob
 {
     public void Execute(IJobExecutionContext context)
@@ -132,7 +132,20 @@ public class HelloJob : IJob
 }
 ```
 
-### Simple Trigger from the configuration file
+### Simple Trigger with hard configuration with limited repeat count
+
+```csharp
+[Job(nameof(HelloJob))]
+[SimpleTrigger(days: 0, hours: 0, minutes: 0, seconds: 10, repeatCount: 50 name: "SimpleTrigger_Count")]
+public class HelloJob : IJob
+{
+    public void Execute(IJobExecutionContext context)
+    {
+    }
+}
+```
+
+### Simple Trigger from the configuration file repeateing forever
 
 `HelloJob.cs`
 
@@ -153,5 +166,29 @@ public class HelloJob : IJob
 <appSettings>
     <add key="Jobs.HelloJob.MySimpleTriggerConfig.IntervalInSeconds" value="5"/>
     <add key="Jobs.HelloJob.MySimpleTriggerConfig.RepeatForever" value="true"/>
+</appSettings>
+```
+
+### Simple Trigger from the configuration file with limited repeat count
+
+`HelloJob.cs`
+
+```csharp
+[Job(nameof(HelloJob))]
+[SimpleTriggerFromConfig(name: "MySimpleTrigger")]
+public class HelloJob : IJob
+{
+    public void Execute(IJobExecutionContext context)
+    {
+    }
+}
+```
+
+`App.config`
+
+```xml
+<appSettings>
+    <add key="Jobs.HelloJob.MySimpleTriggerConfig.IntervalInSeconds" value="5"/>
+    <add key="Jobs.HelloJob.MySimpleTriggerConfig.RepeatCount" value="100"/>
 </appSettings>
 ```

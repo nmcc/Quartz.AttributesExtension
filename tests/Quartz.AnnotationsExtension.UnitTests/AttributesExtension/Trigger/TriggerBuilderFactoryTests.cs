@@ -22,7 +22,7 @@ namespace Quartz.AttributesExtension.Trigger
         public void TriggerBuilderTest_SimpleTriggerAttribute()
         {
             // ACT
-            var triggerBuilder = subject.GetTriggerBuilder(new SimpleTriggerAttribute(1, 0, 0, 0, false));
+            var triggerBuilder = subject.GetTriggerBuilder(new SimpleTriggerAttribute(1, 0, 0, 0));
 
             // ASSERT
             triggerBuilder.Should().NotBeNull();
