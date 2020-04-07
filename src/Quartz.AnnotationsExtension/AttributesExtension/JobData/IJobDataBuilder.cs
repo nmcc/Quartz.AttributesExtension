@@ -1,7 +1,9 @@
-﻿namespace Quartz.AttributesExtension.JobData
+﻿using System;
+
+namespace Quartz.AttributesExtension.JobData
 {
     internal interface IJobDataBuilder
     {
-        JobDataMap Build<JobType>(JobKey jobKey) where JobType : IJob;
+        JobDataMap Build(Type jobType, JobKey jobKey);
     }
 }

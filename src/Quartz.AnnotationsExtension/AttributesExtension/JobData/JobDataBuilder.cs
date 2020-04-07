@@ -18,11 +18,11 @@ namespace Quartz.AttributesExtension.JobData
             this.configurationProvider = configurationProvider ?? throw new ArgumentNullException(nameof(configurationProvider));
         }
 
-        public JobDataMap Build<JobType>(JobKey jobKey) where JobType : IJob
+        public JobDataMap Build(Type jobType, JobKey jobKey)
         {
             var jobDataMap = new JobDataMap();
 
-            foreach (var property in typeof(JobType).GetProperties())
+            foreach (var property in jobType.GetProperties())
             {
                 var jobDataAttribute = property.GetCustomAttributes(typeof(JobDataAttribute), inherit: false)
                     .Cast<JobDataAttribute>()

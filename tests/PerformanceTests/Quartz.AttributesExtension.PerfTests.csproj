@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AssemblyName>Quartz.AttributesExtension.PerfTests</AssemblyName>
+    <RootNamespace>Quartz</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\samples\SampleApplication\SampleApplication.csproj" />
+    <ProjectReference Include="..\..\src\Quartz.AnnotationsExtension\Quartz.AttributesExtension.csproj" />
+  </ItemGroup>
+
+</Project>

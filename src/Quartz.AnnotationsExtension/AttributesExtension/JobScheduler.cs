@@ -1,4 +1,5 @@
 ﻿using Quartz.AttributesExtension.JobData;
+using Quartz.AttributesExtension.Reflection;
 using Quartz.AttributesExtension.Trigger;
 using System;
 using System.Collections.Generic;
@@ -26,24 +27,37 @@ namespace Quartz.AttributesExtension
             this.triggerBuilderFactory = triggerBuilderFactory ?? throw new ArgumentNullException(nameof(triggerBuilderFactory));
         }
 
-        public void ScheduleJob<JobType>() where JobType : IJob
+        public void ScheduleAll()
         {
-            var jobAttributes = typeof(JobType).GetCustomAttributes(typeof(JobAttribute), inherit: false)
-                .Cast<JobAttribute>();
-
-            var triggerAttributes = typeof(JobType).GetCustomAttributes(typeof(ITriggerAttribute), inherit: false)
-                .Cast<ITriggerAttribute>();
-
-            ScheduleJob<JobType>(scheduler, jobAttributes.First(), triggerAttributes);
+            foreach (var jobType in JobLocator.GetAllJobsInAppDomain())
+            {
+                this.ScheduleJob(jobType);
+            }
         }
 
-        private void ScheduleJob<JobType>(IScheduler scheduler, JobAttribute jobAttribute, IEnumerable<ITriggerAttribute> triggerAttributes) where JobType : IJob
+        public void ScheduleJob<JobType>() where JobType : IJob
+        {
+            this.ScheduleJob(typeof(JobType));
+        }
+
+        private void ScheduleJob(Type jobType)
+        {
+            var jobAttributes = jobType.GetCustomAttributes(typeof(JobAttribute), inherit: false)
+                .Cast<JobAttribute>();
+
+            var triggerAttributes = jobType.GetCustomAttributes(typeof(ITriggerAttribute), inherit: false)
+                .Cast<ITriggerAttribute>();
+
+            ScheduleJob(scheduler, jobType, jobAttributes.First(), triggerAttributes);
+        }
+
+        private void ScheduleJob(IScheduler scheduler, Type jobType, JobAttribute jobAttribute, IEnumerable<ITriggerAttribute> triggerAttributes)
         {
             var jobKey = BuildJobKey(jobAttribute);
 
-            var jobDataMap = this.jobDataBuilder.Build<JobType>(jobKey);
+            var jobDataMap = this.jobDataBuilder.Build(jobType, jobKey);
 
-            var job = JobBuilder.Create<JobType>()
+            var job = JobBuilder.Create(jobType)
                 .WithIdentity(jobKey)
                 .SetJobData(jobDataMap)
                 .StoreDurably()

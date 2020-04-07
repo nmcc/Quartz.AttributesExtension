@@ -30,7 +30,7 @@ namespace Quartz.AttributesExtension.JobData
             this.configurationProviderMock.Setup(m => m.GetString("Jobs.SampleJob.IntParam")).Returns("10");
 
             // ACT
-            var jobDataMap = this.subject.Build<SampleJob>(new JobKey(nameof(SampleJob)));
+            var jobDataMap = this.subject.Build(typeof(SampleJob), new JobKey(nameof(SampleJob)));
 
             // ASSERT
             jobDataMap.Should().NotBeNull();

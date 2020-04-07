@@ -267,3 +267,6 @@ paket-files/
 # SQL Project files
 *.jfm
 *.refactorlog
+
+# DotNetPerf test results
+**/BenchmarkDotNet.Artifacts/

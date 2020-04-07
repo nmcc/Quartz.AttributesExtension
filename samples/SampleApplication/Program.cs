@@ -19,7 +19,8 @@ namespace SampleApplication
 
                 // Grab the Scheduler instance from the Factory 
                 var scheduler = StdSchedulerFactory.GetDefaultScheduler();
-                scheduler.ScheduleJob<HelloJob>();
+                //scheduler.ScheduleJob<HelloJob>();
+                scheduler.ScheduleAllJobs();
 
                 // and start it off
                 scheduler.Start();
