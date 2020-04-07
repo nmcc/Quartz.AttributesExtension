@@ -57,25 +57,6 @@ namespace Quartz.AttributesExtension
         }
 
         [Fact]
-        public void ScheduleJobWithDefaultName()
-        {
-            // ARRANGE
-            var jobKey = new JobKey(nameof(SampleJob2));
-            var jobDataMap = new JobDataMap();
-
-            this.jobDataBuilderMock.Setup(m => m.Build(typeof(SampleJob2), jobKey))
-                .Returns(jobDataMap);
-
-            this.schedulerMock.Setup(m => m.AddJob(It.IsAny<IJobDetail>(), true))
-                .Callback((IJobDetail jobDetail, bool _) => VerifyJobDetail(jobDetail, jobKey, jobDataMap));
-
-            // ACT
-            this.subject.ScheduleJob<SampleJob2>();
-
-            // ASSERT
-        }
-
-        [Fact]
         public void ScheduleAllJobs()
         {
             // ARRANGE
@@ -94,24 +75,35 @@ namespace Quartz.AttributesExtension
             this.triggerBuilderMock.Setup(m => m.BuildTrigger(It.IsAny<SimpleTriggerFromConfigAttribute>(), It.IsAny<JobKey>()))
                 .Returns(triggerMock);
 
-            this.schedulerMock.Setup(m => m.AddJob(It.Is<IJobDetail>(j => j.Key.Name == nameof(SampleJob)), true))
+            this.schedulerMock.Setup(m => m.AddJob(It.IsAny<IJobDetail>(), true))
                 .Callback((IJobDetail jobDetail, bool _) => VerifyJobDetail(jobDetail, job1Key, emptyJobDataMap));
 
-            this.schedulerMock.Setup(m => m.AddJob(It.Is<IJobDetail>(j => j.Key.Name == nameof(SampleJob2)), true))
+            this.schedulerMock.Setup(m => m.AddJob(It.IsAny<IJobDetail>(), true))
                 .Callback((IJobDetail jobDetail, bool _) => VerifyJobDetail(jobDetail, job2Key, emptyJobDataMap));
 
             this.schedulerMock.Setup(m => m.ScheduleJob(triggerMock)).Returns(new DateTimeOffset());
 
             // ACT
-            this.subject.ScheduleAll();
+            this.subject.ScheduleJob<SampleJob>();
+
+            // ASSERT
+            void VerifyJobDetails(IJobDetail jobDetail)
+            {
+                jobDetail.Key.Should().Be(job1Key);
+
+                if (jobDetail.Key == job1Key)
+                    VerifyJobDetail(jobDetail, job1Key, emptyJobDataMap);
+                else if(jobDetail.Key == job2Key)
+                    VerifyJobDetail(jobDetail, job2Key, emptyJobDataMap);
+                
+            }
         }
 
-        private static void VerifyJobDetail(IJobDetail jobDetail, JobKey expectedJobKey, JobDataMap expectedJobDataMap)
+        private void VerifyJobDetail(IJobDetail jobDetail, JobKey expectedJobKey, JobDataMap expectedJobDataMap)
         {
             jobDetail.Should().NotBeNull();
-            jobDetail.Key.Name.Should().Be(expectedJobKey.Name);
-            jobDetail.Key.Group.Should().Be(expectedJobKey.Group);
-            jobDetail.JobDataMap.Should().BeEquivalentTo(expectedJobDataMap);
+            jobDetail.Key.Should().Be(expectedJobKey);
+            jobDetail.JobDataMap.Should().BeSameAs(expectedJobDataMap);
         }
     }
 }

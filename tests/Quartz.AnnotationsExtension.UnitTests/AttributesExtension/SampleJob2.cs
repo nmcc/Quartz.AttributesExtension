@@ -1,6 +1,6 @@
 ﻿namespace Quartz.AttributesExtension
 {
-    [Job]
+    [Job(nameof(SampleJob2))]
     public sealed class SampleJob2 : IJob
     {
         public void Execute(IJobExecutionContext context)
