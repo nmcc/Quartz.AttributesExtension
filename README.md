@@ -89,7 +89,7 @@ When the Job or Trigger are added to the `DEFAULT` group, the `<Group>` can be o
 ### Job Data
 
 ```csharp
-[Job(nameof(HelloJob))]
+[Job] // It will assume the name of the class as the name of the job
 public class HelloJob : IJob
 {
     [JobData("Hello")] // hard coded value

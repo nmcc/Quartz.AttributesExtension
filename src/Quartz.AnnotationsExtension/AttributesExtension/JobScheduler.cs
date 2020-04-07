@@ -4,6 +4,7 @@ using Quartz.AttributesExtension.Trigger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Quartz.AttributesExtension.JobKeyBuilder;
 
 namespace Quartz.AttributesExtension
 {
@@ -53,7 +54,7 @@ namespace Quartz.AttributesExtension
 
         private void ScheduleJob(IScheduler scheduler, Type jobType, JobAttribute jobAttribute, IEnumerable<ITriggerAttribute> triggerAttributes)
         {
-            var jobKey = BuildJobKey(jobAttribute);
+            var jobKey = BuildJobKey(jobAttribute, jobType);
 
             var jobDataMap = this.jobDataBuilder.Build(jobType, jobKey);
 
@@ -76,10 +77,5 @@ namespace Quartz.AttributesExtension
                 scheduler.ScheduleJob(trigger);
             }
         }
-
-        private static JobKey BuildJobKey(JobAttribute jobAttribute)
-            => jobAttribute.Group == null
-                ? new JobKey(jobAttribute.Name)
-                : new JobKey(jobAttribute.Name, jobAttribute.Group);
     }
 }
