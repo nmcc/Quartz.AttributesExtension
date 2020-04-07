@@ -1,0 +1,28 @@
+name: Build and Test
+
+on:
+  push:
+    branches-ignore:
+      - master
+      - release/**
+      - hotfix/**
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout develop branch 
+      uses: actions/checkout@v1
+
+    - name: Setup MSBuild.exe
+      uses: warrenbuckley/Setup-MSBuild@v1
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.2
+     
+    - name: Restore NuGet Packages
+      run: nuget restore Quartz.AttributesExtension.sln
+
+    - name: Build 
+      run: msbuild Quartz.AttributesExtension.sln -p:Configuration=Debug
