@@ -36,6 +36,26 @@ class Program
 }
 ```
 
+You can also register all jobs by using reflection using the following extension method:
+
+```csharp
+using Quartz;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        var scheduler = StdSchedulerFactory.GetDefaultScheduler();
+
+        // Locates all classes that declare the [Job] attribute and schedules them
+        scheduler.ScheduleAllJob();
+
+        // and start it off
+        scheduler.Start();
+    }
+}
+```
+
 ## Attributes
 
 * `[Job]` - registers the `Job` class on the scheduler
