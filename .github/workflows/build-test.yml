@@ -24,5 +24,19 @@ jobs:
     - name: Restore NuGet Packages
       run: nuget restore Quartz.AttributesExtension.sln
 
-    - name: Build 
+    - name: Build with .NET Framework
       run: msbuild Quartz.AttributesExtension.sln -p:Configuration=Debug
+    
+    - name: Build with .NET Core
+      run: dotnet build
+
+    - name: Run unit tests
+      run: dotnet test
+
+    - name: Restore NuGet Packages for Sample Application
+      working-directory: ./samples/SampleApplication
+      run: nuget restore SampleApplication.sln
+
+    - name: Build Sample Application
+      working-directory: ./samples/SampleApplication
+      run: msbuild SampleApplication.sln -p:Configuration=Debug
