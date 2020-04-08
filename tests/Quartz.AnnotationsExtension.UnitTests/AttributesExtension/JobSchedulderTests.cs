@@ -75,31 +75,19 @@ namespace Quartz.AttributesExtension
             this.triggerBuilderMock.Setup(m => m.BuildTrigger(It.IsAny<SimpleTriggerFromConfigAttribute>(), It.IsAny<JobKey>()))
                 .Returns(triggerMock);
 
-            this.schedulerMock.Setup(m => m.AddJob(It.IsAny<IJobDetail>(), true))
+            this.schedulerMock.Setup(m => m.AddJob(It.Is<IJobDetail>(j => j.Key.Name == nameof(SampleJob)), true))
                 .Callback((IJobDetail jobDetail, bool _) => VerifyJobDetail(jobDetail, job1Key, emptyJobDataMap));
 
-            this.schedulerMock.Setup(m => m.AddJob(It.IsAny<IJobDetail>(), true))
+            this.schedulerMock.Setup(m => m.AddJob(It.Is<IJobDetail>(j => j.Key.Name == nameof(SampleJob2)), true))
                 .Callback((IJobDetail jobDetail, bool _) => VerifyJobDetail(jobDetail, job2Key, emptyJobDataMap));
 
             this.schedulerMock.Setup(m => m.ScheduleJob(triggerMock)).Returns(new DateTimeOffset());
 
             // ACT
-            this.subject.ScheduleJob<SampleJob>();
-
-            // ASSERT
-            void VerifyJobDetails(IJobDetail jobDetail)
-            {
-                jobDetail.Key.Should().Be(job1Key);
-
-                if (jobDetail.Key == job1Key)
-                    VerifyJobDetail(jobDetail, job1Key, emptyJobDataMap);
-                else if(jobDetail.Key == job2Key)
-                    VerifyJobDetail(jobDetail, job2Key, emptyJobDataMap);
-                
-            }
+            this.subject.ScheduleAll();
         }
 
-        private void VerifyJobDetail(IJobDetail jobDetail, JobKey expectedJobKey, JobDataMap expectedJobDataMap)
+        private static void VerifyJobDetail(IJobDetail jobDetail, JobKey expectedJobKey, JobDataMap expectedJobDataMap)
         {
             jobDetail.Should().NotBeNull();
             jobDetail.Key.Should().Be(expectedJobKey);
