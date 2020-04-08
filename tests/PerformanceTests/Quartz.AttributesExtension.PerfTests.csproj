@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\samples\SampleApplication\SampleApplication.csproj" />
     <ProjectReference Include="..\..\src\Quartz.AnnotationsExtension\Quartz.AttributesExtension.csproj" />
   </ItemGroup>
 
