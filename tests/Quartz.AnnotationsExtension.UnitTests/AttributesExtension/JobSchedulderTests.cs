@@ -90,8 +90,8 @@ namespace Quartz.AttributesExtension
         private static void VerifyJobDetail(IJobDetail jobDetail, JobKey expectedJobKey, JobDataMap expectedJobDataMap)
         {
             jobDetail.Should().NotBeNull();
-            jobDetail.Key.Should().Be(expectedJobKey);
-            jobDetail.JobDataMap.Should().BeSameAs(expectedJobDataMap);
+            jobDetail.Key.Should().BeEquivalentTo(expectedJobKey);
+            jobDetail.JobDataMap.Should().BeEquivalentTo(expectedJobDataMap);
         }
     }
 }
