@@ -1,11 +1,6 @@
 name: Build and Test
 
-on:
-  push:
-    branches-ignore:
-      - master
-      - release/**
-      - hotfix/**
+on: [push]
 
 jobs:
   build:
@@ -24,10 +19,10 @@ jobs:
     - name: Restore NuGet Packages
       run: nuget restore Quartz.AttributesExtension.sln
 
-    - name: Build with .NET Framework
+    - name: Build for .NET Framework
       run: msbuild Quartz.AttributesExtension.sln -p:Configuration=Debug
     
-    - name: Build with .NET Core
+    - name: Build for .NET Core
       run: dotnet build
 
     - name: Run unit tests
