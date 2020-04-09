@@ -1,0 +1,37 @@
+name: Build and Test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout develop branch 
+      uses: actions/checkout@v1
+
+    - name: Setup MSBuild.exe
+      uses: warrenbuckley/Setup-MSBuild@v1
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.2
+     
+    - name: Restore NuGet Packages
+      run: nuget restore Quartz.AttributesExtension.sln
+
+    - name: Build for .NET Framework
+      run: msbuild Quartz.AttributesExtension.sln -p:Configuration=Debug
+    
+    - name: Build for .NET Core
+      run: dotnet build
+
+    - name: Run unit tests
+      run: dotnet test
+
+    - name: Restore NuGet Packages for Sample Application
+      working-directory: ./samples/SampleApplication
+      run: nuget restore SampleApplication.sln
+
+    - name: Build Sample Application
+      working-directory: ./samples/SampleApplication
+      run: msbuild SampleApplication.sln -p:Configuration=Debug
