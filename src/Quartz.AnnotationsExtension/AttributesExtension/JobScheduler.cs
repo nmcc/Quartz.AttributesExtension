@@ -1,4 +1,5 @@
-﻿using Quartz.AttributesExtension.JobData;
+﻿using Common.Logging;
+using Quartz.AttributesExtension.JobData;
 using Quartz.AttributesExtension.Reflection;
 using Quartz.AttributesExtension.Trigger;
 using System;
@@ -12,19 +13,22 @@ namespace Quartz.AttributesExtension
         private readonly IScheduler scheduler;
         private readonly IJobDataBuilder jobDataBuilder;
         private readonly ITriggerBuilderFactory triggerBuilderFactory;
+        private readonly ILog logger;
 
         public JobScheduler(IScheduler scheduler)
         {
             this.scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
             this.jobDataBuilder = new JobDataBuilder();
             this.triggerBuilderFactory = new TriggerBuilderFactory();
+            this.logger = LogManager.GetCurrentClassLogger();
         }
 
-        internal JobScheduler(IScheduler scheduler, IJobDataBuilder jobDataBuilder, ITriggerBuilderFactory triggerBuilderFactory)
+        internal JobScheduler(IScheduler scheduler, IJobDataBuilder jobDataBuilder, ITriggerBuilderFactory triggerBuilderFactory, ILog logger)
         {
             this.scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
             this.jobDataBuilder = jobDataBuilder ?? throw new ArgumentNullException(nameof(jobDataBuilder));
             this.triggerBuilderFactory = triggerBuilderFactory ?? throw new ArgumentNullException(nameof(triggerBuilderFactory));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public void ScheduleAll()
@@ -65,6 +69,11 @@ namespace Quartz.AttributesExtension
 
             scheduler.AddJob(job, replace: true);
 
+            if (logger.IsDebugEnabled)
+            {
+                logger.Debug($"Job {jobKey}: added to scheduler with {jobDataMap.Count} elements on Job Data");
+            }
+
             foreach (var triggerAttr in triggerAttributes)
             {
                 var builder = this.triggerBuilderFactory.GetTriggerBuilder(triggerAttr)
@@ -74,7 +83,14 @@ namespace Quartz.AttributesExtension
                     ?? throw new InvalidQuartzConfigurationException($"Unable to build trigger {triggerAttr.Group}.{triggerAttr.Name}");
 
                 scheduler.ScheduleJob(trigger);
+
+                if (logger.IsDebugEnabled)
+                {
+                    logger.Debug($"Job {jobKey}: Added {trigger.Key} trigger");
+                }
             }
+
+            logger.Info($"Job {jobKey} is scheduled");
         }
 
         private static JobKey BuildJobKey(JobAttribute jobAttribute, Type jobType)
