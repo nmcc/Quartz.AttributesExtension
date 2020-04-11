@@ -4,6 +4,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Quartz.AttributesExtension</AssemblyName>
     <RootNamespace>Quartz</RootNamespace>
+    <Copyright>Copyright Nuno Caneco 2020</Copyright>
+    <Company></Company>
+    <Authors>Nuno Caneco</Authors>
+    <RepositoryUrl>https://github.com/nmcc/Quartz.AttributesExtension</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/nmcc/Quartz.AttributesExtension</PackageProjectUrl>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
   <ItemGroup>
