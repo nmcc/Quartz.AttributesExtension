@@ -13,6 +13,5 @@ namespace Quartz.AttributesExtension
 
             return new JobKey(jobAttribute.Name, jobAttribute.Group);
         }
-
     }
 }

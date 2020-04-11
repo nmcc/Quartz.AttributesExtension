@@ -1,18 +1,40 @@
-﻿using System;
+﻿using FluentAssertions;
+using Xunit;
 
 namespace Quartz.AttributesExtension
 {
-    internal static class JobKeyBuilder
+    public class JobKeyBuilderTests
     {
-        public static JobKey BuildJobKey(JobAttribute jobAttribute, Type jobType)
+        [Fact]
+        public void DefaultCtor()
         {
-            if (string.IsNullOrWhiteSpace(jobAttribute.Name))
-                return new JobKey(jobType.Name);
-            else if (jobAttribute.Group == null)
-                return new JobKey(jobAttribute.Name);
+            // ARRANGE
+            var jobAttr = new JobAttribute();
 
-            return new JobKey(jobAttribute.Name, jobAttribute.Group);
+            // ACT
+            var key = JobKeyBuilder.BuildJobKey(jobAttr, typeof(SampleJob));
+
+            // ASSERT
+            key.Should().NotBeNull();
+            key.Name.Should().Be(nameof(SampleJob));
+            key.Group.Should().Be("DEFAULT");
         }
 
+        [Theory]
+        [InlineData("MyJob", "MyGroup", "MyJob", "MyGroup")]
+        [InlineData("MyJob", (string)null, "MyJob", "DEFAULT")]
+        public void NameAndGroup(string name, string group, string expectedJobName, string expectedGroupName)
+        {
+            // ARRANGE
+            var jobAttr = new JobAttribute(name, group);
+
+            // ACT
+            var key = JobKeyBuilder.BuildJobKey(jobAttr, typeof(SampleJob));
+
+            // ASSERT
+            key.Should().NotBeNull();
+            key.Name.Should().Be(expectedJobName);
+            key.Group.Should().Be(expectedGroupName);
+        }
     }
 }
