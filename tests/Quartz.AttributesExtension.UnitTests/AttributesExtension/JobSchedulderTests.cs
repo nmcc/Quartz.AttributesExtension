@@ -15,8 +15,17 @@ namespace Quartz.AttributesExtension
         private readonly Mock<ITriggerBuilderFactory> triggerBuilderFactoryMock = new Mock<ITriggerBuilderFactory>(MockBehavior.Strict);
         private readonly Mock<ITriggerBuilder> triggerBuilderMock = new Mock<ITriggerBuilder>(MockBehavior.Strict);
         private readonly Mock<ILog> logMock = new Mock<ILog>();
+        private readonly Mock<ITrigger> triggerMock = new Mock<ITrigger>();
 
         private readonly JobScheduler subject;
+
+        private readonly JobKey job1Key = new JobKey(nameof(SampleJob));
+        private readonly JobKey job2Key = new JobKey(nameof(SampleJob2));
+        private readonly JobKey job3Key = new JobKey(nameof(InterruptableJob));
+
+        private readonly JobDataMap emptyDataMap = new JobDataMap();
+        private readonly JobDataMap job1DataMap = new JobDataMap { { "BoolParam", true } };
+
 
         public void Dispose()
         {
@@ -35,26 +44,9 @@ namespace Quartz.AttributesExtension
         public void ScheduleJob()
         {
             // ARRANGE
-            var jobKey = new JobKey(nameof(SampleJob));
-            var jobDataMap = new JobDataMap
-            {
-                { "BoolParam", true }
-            };
-            var triggerMock = new Mock<ITrigger>().Object;
-
-            this.jobDataBuilderMock.Setup(m => m.Build(typeof(SampleJob), jobKey))
-                .Returns(jobDataMap);
-            this.triggerBuilderFactoryMock.Setup(m => m.GetTriggerBuilder(It.IsAny<SimpleTriggerFromConfigAttribute>()))
-                .Returns(triggerBuilderMock.Object);
-            this.triggerBuilderMock.Setup(m => m.BuildTrigger(It.IsAny<SimpleTriggerFromConfigAttribute>(), It.IsAny<JobKey>(), typeof(SampleJob)))
-                .Returns(triggerMock);
-            this.schedulerMock.Setup(m => m.ScheduleJob(triggerMock))
-                .Returns(new DateTimeOffset());
+            SetupMocks_SampleJob();
 
             // ARRANGE and ASSERT
-            this.schedulerMock.Setup(m => m.AddJob(It.IsAny<IJobDetail>(), true))
-                .Callback((IJobDetail jobDetail, bool _) => VerifyJobDetail(jobDetail, jobKey, jobDataMap));
-
             this.logMock.Setup(m => m.Info(It.IsAny<string>()))
                 .Callback((object message) => (message as string)?.Contains(nameof(SampleJob)));
 
@@ -66,32 +58,48 @@ namespace Quartz.AttributesExtension
         public void ScheduleAllJobs()
         {
             // ARRANGE
-            var job1Key = new JobKey(nameof(SampleJob));
-            var job2Key = new JobKey(nameof(SampleJob2));
-            var triggerMock = new Mock<ITrigger>().Object;
-            var emptyJobDataMap = new JobDataMap();
-
-            this.jobDataBuilderMock.Setup(m => m.Build(typeof(SampleJob), job1Key))
-                .Returns(emptyJobDataMap);
-            this.jobDataBuilderMock.Setup(m => m.Build(typeof(SampleJob2), job2Key))
-                .Returns(emptyJobDataMap);
-
-            this.triggerBuilderFactoryMock.Setup(m => m.GetTriggerBuilder(It.IsAny<SimpleTriggerFromConfigAttribute>()))
-                .Returns(triggerBuilderMock.Object);
-            this.triggerBuilderMock.Setup(m => m.BuildTrigger(It.IsAny<SimpleTriggerFromConfigAttribute>(), It.IsAny<JobKey>(), typeof(SampleJob)))
-                .Returns(triggerMock);
-            this.schedulerMock.Setup(m => m.ScheduleJob(triggerMock))
-                .Returns(new DateTimeOffset());
-
-            // ARRANGE and ASSERT
-            this.schedulerMock.Setup(m => m.AddJob(It.Is<IJobDetail>(j => j.Key.Name == nameof(SampleJob)), true))
-                .Callback((IJobDetail jobDetail, bool _) => VerifyJobDetail(jobDetail, job1Key, emptyJobDataMap));
-
-            this.schedulerMock.Setup(m => m.AddJob(It.Is<IJobDetail>(j => j.Key.Name == nameof(SampleJob2)), true))
-                .Callback((IJobDetail jobDetail, bool _) => VerifyJobDetail(jobDetail, job2Key, emptyJobDataMap));
+            SetupMocks_SampleJob();
+            SetupMocks_SampleJob2();
+            SetupMocks_InterruptableJob();
 
             // ACT
             this.subject.ScheduleAll();
+        }
+
+        private void SetupMocks_SampleJob()
+        {
+            this.jobDataBuilderMock.Setup(m => m.Build(typeof(SampleJob), job1Key))
+                .Returns(job1DataMap);
+
+            this.triggerBuilderFactoryMock.Setup(m => m.GetTriggerBuilder(It.IsAny<SimpleTriggerFromConfigAttribute>()))
+                .Returns(triggerBuilderMock.Object);
+
+            this.triggerBuilderMock.Setup(m => m.BuildTrigger(It.IsAny<SimpleTriggerFromConfigAttribute>(), It.IsAny<JobKey>(), typeof(SampleJob)))
+                .Returns(triggerMock.Object);
+
+            this.schedulerMock.Setup(m => m.ScheduleJob(triggerMock.Object))
+              .Returns(new DateTimeOffset());
+
+            this.schedulerMock.Setup(m => m.AddJob(It.Is<IJobDetail>(j => j.Key.Name == nameof(SampleJob)), true))
+                .Callback((IJobDetail jobDetail, bool _) => VerifyJobDetail(jobDetail, job1Key, job1DataMap));
+        }
+
+        private void SetupMocks_SampleJob2()
+        {
+            this.jobDataBuilderMock.Setup(m => m.Build(typeof(SampleJob2), job2Key))
+                .Returns(emptyDataMap);
+
+            this.schedulerMock.Setup(m => m.AddJob(It.Is<IJobDetail>(j => j.Key.Name == nameof(SampleJob2)), true))
+                .Callback((IJobDetail jobDetail, bool _) => VerifyJobDetail(jobDetail, job2Key, emptyDataMap));
+        }
+
+        private void SetupMocks_InterruptableJob()
+        {
+            this.jobDataBuilderMock.Setup(m => m.Build(typeof(InterruptableJob), job3Key))
+                .Returns(emptyDataMap);
+
+            this.schedulerMock.Setup(m => m.AddJob(It.Is<IJobDetail>(j => j.Key.Name == nameof(InterruptableJob)), true))
+                .Callback((IJobDetail jobDetail, bool _) => VerifyJobDetail(jobDetail, job3Key, emptyDataMap));
         }
 
         private static void VerifyJobDetail(IJobDetail jobDetail, JobKey expectedJobKey, JobDataMap expectedJobDataMap)
