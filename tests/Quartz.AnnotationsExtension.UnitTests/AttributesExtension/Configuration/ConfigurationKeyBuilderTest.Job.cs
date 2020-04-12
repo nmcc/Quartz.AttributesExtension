@@ -7,8 +7,8 @@ namespace Quartz.AttributesExtension.Configuration
     public partial class ConfigurationKeyBuilderTest
     {
         [Theory]
-        [InlineData("Job1", (string)null, "Jobs.Job1")]
-        [InlineData("Job1", "Group1", "Jobs.Group1.Job1")]
+        [InlineData("Job1", (string)null, "Quartz.Jobs.Job1")]
+        [InlineData("Job1", "Group1", "Quartz.Jobs.Group1.Job1")]
         public void BuildJobKey_NoParams(string jobName, string jobGroup, string expected)
         {
             // ARRANGE
@@ -26,7 +26,7 @@ namespace Quartz.AttributesExtension.Configuration
         public void BuildJobKey_NullJobKey()
         {
             // ARRANGE
-            Action action = () => ConfigurationKeyBuilder.Build(null);
+            Action action = () => ConfigurationKeyBuilder.Build((JobKey)null);
 
             // ASSERT
             action.Should().Throw<ArgumentNullException>()
@@ -34,8 +34,8 @@ namespace Quartz.AttributesExtension.Configuration
         }
 
         [Theory]
-        [InlineData("group1", "Jobs.group1.job1.param1.param2")]
-        [InlineData((string)null, "Jobs.job1.param1.param2")]
+        [InlineData("group1", "Quartz.Jobs.group1.job1.param1.param2")]
+        [InlineData((string)null, "Quartz.Jobs.job1.param1.param2")]
         public void BuildJobKey_WithParams(string group, string expectedKey)
         {
             // ARRANGE

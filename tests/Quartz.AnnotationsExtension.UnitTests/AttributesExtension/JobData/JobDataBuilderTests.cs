@@ -26,8 +26,8 @@ namespace Quartz.AttributesExtension.JobData
         public void HappyPath()
         {
             // ARRANGE
-            this.configurationProviderMock.Setup(m => m.GetString("Jobs.SampleJob.BoolParam")).Returns("true");
-            this.configurationProviderMock.Setup(m => m.GetString("Jobs.SampleJob.IntParam")).Returns("10");
+            this.configurationProviderMock.Setup(m => m.GetString("Quartz.Jobs.SampleJob.BoolParam")).Returns("true");
+            this.configurationProviderMock.Setup(m => m.GetString("Quartz.Jobs.SampleJob.IntParam")).Returns("10");
 
             // ACT
             var jobDataMap = this.subject.Build(typeof(SampleJob), new JobKey(nameof(SampleJob)));

@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Quartz.AttributesExtension.Trigger
 {
-    public class SimpleTriggerFromConfigAttributeBuilderTests
+    public class SimpleTriggerFromConfigAttributeBuilderTests : IDisposable
     {
         private readonly JobKey jobKey = new JobKey("job1");
         private readonly Mock<IConfigurationProvider> configurationProviderMock;
@@ -15,16 +15,21 @@ namespace Quartz.AttributesExtension.Trigger
 
         public SimpleTriggerFromConfigAttributeBuilderTests()
         {
-            this.configurationProviderMock = new Mock<IConfigurationProvider>();
+            this.configurationProviderMock = new Mock<IConfigurationProvider>(MockBehavior.Strict);
             this.subject = new SimpleTriggerFromConfigAttributeBuilder(configurationProviderMock.Object);
+        }
+
+        public void Dispose()
+        {
+            this.configurationProviderMock.VerifyAll();
         }
 
         [Fact]
         public void RepeatForever()
         {
             // ARRANGE
-            configurationProviderMock.Setup(m => m.GetInt("Jobs.job1.trigger1.IntervalInSeconds")).Returns(10);
-            configurationProviderMock.Setup(m => m.GetBool("Jobs.job1.trigger1.RepeatForever")).Returns(true);
+            configurationProviderMock.Setup(m => m.GetInt("Quartz.Triggers.trigger1.IntervalInSeconds")).Returns(10);
+            configurationProviderMock.Setup(m => m.GetBool("Quartz.Triggers.trigger1.RepeatForever")).Returns(true);
 
             // ACT
             var trigger = subject.BuildTrigger(new SimpleTriggerFromConfigAttribute("trigger1"), jobKey);
@@ -43,8 +48,9 @@ namespace Quartz.AttributesExtension.Trigger
         public void RepeatCount()
         {
             // ARRANGE
-            configurationProviderMock.Setup(m => m.GetInt("Jobs.job1.trigger1.IntervalInSeconds")).Returns(10);
-            configurationProviderMock.Setup(m => m.GetInt("Jobs.job1.trigger1.RepeatCount")).Returns(100);
+            configurationProviderMock.Setup(m => m.GetInt("Quartz.Triggers.trigger1.IntervalInSeconds")).Returns(10);
+            configurationProviderMock.Setup(m => m.GetBool("Quartz.Triggers.trigger1.RepeatForever")).Returns((bool?)null);
+            configurationProviderMock.Setup(m => m.GetInt("Quartz.Triggers.trigger1.RepeatCount")).Returns(100);
 
             // ACT
             var trigger = subject.BuildTrigger(new SimpleTriggerFromConfigAttribute("trigger1"), jobKey);
@@ -63,7 +69,7 @@ namespace Quartz.AttributesExtension.Trigger
         public void NullIntervalInSeconds()
         {
             // ARRANGE
-            configurationProviderMock.Setup(m => m.GetInt("Jobs.job1.trigger1.IntervalInSeconds")).Returns((int?)null);
+            configurationProviderMock.Setup(m => m.GetInt("Quartz.Triggers.trigger1.IntervalInSeconds")).Returns((int?)null);
 
             // ACT
             Action action = () => subject.BuildTrigger(new SimpleTriggerFromConfigAttribute("trigger1"), jobKey);
@@ -76,17 +82,17 @@ namespace Quartz.AttributesExtension.Trigger
         public void MissingRepeatCountAndRepeatForever()
         {
             // ARRANGE
-            configurationProviderMock.Setup(m => m.GetInt("Jobs.job1.trigger1.IntervalInSeconds")).Returns(10);
-            configurationProviderMock.Setup(m => m.GetInt("Jobs.job1.trigger1.RepeatCount")).Returns((int?)null);
-            configurationProviderMock.Setup(m => m.GetBool("Jobs.job1.trigger1.RepeatForever")).Returns((bool?)null);
+            configurationProviderMock.Setup(m => m.GetInt("Quartz.Triggers.trigger1.IntervalInSeconds")).Returns(10);
+            configurationProviderMock.Setup(m => m.GetInt("Quartz.Triggers.trigger1.RepeatCount")).Returns((int?)null);
+            configurationProviderMock.Setup(m =>m.GetBool("Quartz.Triggers.trigger1.RepeatForever")).Returns((bool?)null);
 
             // ACT
             Action action = () => subject.BuildTrigger(new SimpleTriggerFromConfigAttribute("trigger1"), jobKey);
 
             // ASSERT
             var exception = action.Should().Throw<InvalidQuartzConfigurationException>().And;
-            exception.Message.Should().Contain("Jobs.job1.trigger1.RepeatForever");
-            exception.Message.Should().Contain("Jobs.job1.trigger1.RepeatCount");
+            exception.Message.Should().Contain("Quartz.Triggers.trigger1.RepeatForever");
+            exception.Message.Should().Contain("Quartz.Triggers.trigger1.RepeatCount");
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Quartz.AttributesExtension.Trigger
                 .WithIdentity(triggerKey)
                 .ForJob(jobKey);
 
-            var cronExpressionKey = ConfigurationKeyBuilder.Build(jobKey, triggerKey, ConfigurationParamaters.Cron);
+            var cronExpressionKey = ConfigurationKeyBuilder.Build(triggerKey, ConfigurationParamaters.Cron);
             var cronExpression = this.configurationProvider.GetString(cronExpressionKey)
                 ?? throw new InvalidQuartzConfigurationException($"Unable to get Cron Expression from configuration key {cronExpressionKey}");
 

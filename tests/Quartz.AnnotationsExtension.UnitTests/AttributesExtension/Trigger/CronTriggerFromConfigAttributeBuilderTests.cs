@@ -24,7 +24,7 @@ namespace Quartz.AttributesExtension.Trigger
         public void HappyPath()
         {
             // ARRANGE
-            configurationProviderMock.Setup(m => m.GetString("Jobs.job1.trigger1.Cron")).Returns(CronExpression);
+            configurationProviderMock.Setup(m => m.GetString("Quartz.Triggers.trigger1.Cron")).Returns(CronExpression);
 
             // ACT
             var trigger = subject.BuildTrigger(new CronTriggerFromConfigAttribute("trigger1"), jobKey);
@@ -42,14 +42,14 @@ namespace Quartz.AttributesExtension.Trigger
         public void NullCronExpression()
         {
             // ARRANGE
-            configurationProviderMock.Setup(m => m.GetString("Jobs.job1.trigger1.Cron")).Returns((string)null);
+            configurationProviderMock.Setup(m => m.GetString("Quartz.Triggers.trigger1.Cron")).Returns((string)null);
 
             // ACT
             Action action = () => subject.BuildTrigger(new CronTriggerFromConfigAttribute("trigger1"), jobKey);
 
             // ASSERT
             action.Should().Throw<InvalidQuartzConfigurationException>()
-                .And.Message.Should().Contain("Jobs.job1.trigger1.Cron");
+                .And.Message.Should().Contain("Quartz.Triggers.trigger1.Cron");
         }
     }
 }

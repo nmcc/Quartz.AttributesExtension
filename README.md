@@ -73,12 +73,13 @@ Quartz.AttributesExtensions uses a convention to get data from the configuration
 The convention is as follows:
 
 * For Job Data Parameters
-    * `Jobs.<JobKey>.<JobData_ParameterName>` - Sets Job Data parameters 
+    * `Quartz.Jobs.<JobKey>.<JobData_ParameterName>` - Sets Job Data parameters 
 * For Cron Trigger: 
-    * `Jobs.<JobKey>.<TriggerKey>.Cron` - Sets the Cron expression for a specific trigger
+    * `Quartz.Triggers.<TriggerKey>.Cron` - Sets the Cron expression for a specific trigger
 * For Simple Trigger: 
-    * `Jobs.<JobKey>.<TriggerKey>.IntervalInSeconds` - Sets the trigger interval in ceconds for a specific trigger
-    * `Jobs.<JobKey>.<TriggerKey>.RepeatForever` - Sets whether a specific trigger should be triggered forever (default: `false`)
+    * `Quartz.Jobs.<TriggerKey>.IntervalInSeconds` - Sets the trigger interval in ceconds for a specific trigger
+    * `Quartz.Jobs.<TriggerKey>.RepeatCount` - Sets the number of iterations to run the job
+    * `Quartz.Jobs.<TriggerKey>.RepeatForever` - Sets whether a specific trigger should be triggered forever (default: `false`)
 
 The `<JobKey>` and `<TriggerKey>` are defined as `<Group>.<Name>`.
 
@@ -95,10 +96,10 @@ public class HelloJob : IJob
     [JobData("Hello")] // hard coded value
     public string Message { get; set; }
 
-    [JobData] // gets value from Jobs.HelloJob.SomeNumber from configuration
+    [JobData] // gets value from Quartz.Jobs.HelloJob.SomeNumber from configuration
     public int SomeNumber { get; set; }
 
-    [JobData] // getsvalue from Jobs.HelloJob.SomeBoolean from configuration
+    [JobData] // getsvalue from Quartz.Jobs.HelloJob.SomeBoolean from configuration
     public bool SomeBoolean { get; set; }
 }
 ```
@@ -135,7 +136,7 @@ public class HelloJob : IJob
 
 ```xml
 <appSettings>
-    <add key="Jobs.HelloJob.MyCronTrigger.Cron" value="0/10 * * * * ? *"/>
+    <add key="Quartz.Triggers.MyCronTrigger.Cron" value="0/10 * * * * ? *"/>
 </appSettings>
 ```
 
@@ -184,8 +185,8 @@ public class HelloJob : IJob
 
 ```xml
 <appSettings>
-    <add key="Jobs.HelloJob.MySimpleTriggerConfig.IntervalInSeconds" value="5"/>
-    <add key="Jobs.HelloJob.MySimpleTriggerConfig.RepeatForever" value="true"/>
+    <add key="Quartz.Triggers.MySimpleTrigger.IntervalInSeconds" value="5"/>
+    <add key="Quartz.Triggers.MySimpleTrigger.RepeatForever" value="true"/>
 </appSettings>
 ```
 
@@ -208,7 +209,7 @@ public class HelloJob : IJob
 
 ```xml
 <appSettings>
-    <add key="Jobs.HelloJob.MySimpleTriggerConfig.IntervalInSeconds" value="5"/>
-    <add key="Jobs.HelloJob.MySimpleTriggerConfig.RepeatCount" value="100"/>
+    <add key="Quartz.Triggers.HelloJob.MySimpleTrigger.IntervalInSeconds" value="5"/>
+    <add key="Quartz.Triggers.HelloJob.MySimpleTrigger.RepeatCount" value="100"/>
 </appSettings>
 ```
