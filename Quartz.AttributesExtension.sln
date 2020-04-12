@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quartz.AttributesExtension", "src\Quartz.AnnotationsExtension\Quartz.AttributesExtension.csproj", "{A7764B47-3F42-4A23-9AD5-CF0D97AAD808}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quartz.AttributesExtension", "src\Quartz.AttributesExtension\Quartz.AttributesExtension.csproj", "{A7764B47-3F42-4A23-9AD5-CF0D97AAD808}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quartz.AttributesExtension.UnitTests", "tests\Quartz.AnnotationsExtension.UnitTests\Quartz.AttributesExtension.UnitTests.csproj", "{3A7FA8F2-6B40-4C1C-B3A4-7B945DB93994}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quartz.AttributesExtension.UnitTests", "tests\Quartz.AttributesExtension.UnitTests\Quartz.AttributesExtension.UnitTests.csproj", "{3A7FA8F2-6B40-4C1C-B3A4-7B945DB93994}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Performance Tests", "Performance Tests", "{4278FFE1-6414-46F1-8B16-C37AB4510FF6}"
 EndProject

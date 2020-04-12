@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApplication", "SampleApplication.csproj", "{A05E485E-2D6C-4C76-8306-1FAEC6CADDE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quartz.AttributesExtension", "..\..\src\Quartz.AnnotationsExtension\Quartz.AttributesExtension.csproj", "{AB86FFFC-7FE7-4A4B-AECD-D3C7B5CB153D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quartz.AttributesExtension", "..\..\src\Quartz.AttributesExtension\Quartz.AttributesExtension.csproj", "{AB86FFFC-7FE7-4A4B-AECD-D3C7B5CB153D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
