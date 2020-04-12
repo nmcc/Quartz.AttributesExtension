@@ -36,7 +36,7 @@ namespace Quartz.AttributesExtension.Trigger
                 .WithIdentity(triggerKey)
                 .ForJob(jobKey);
 
-            var (interval, repeatForever, repeatCount) = GetParameters(jobKey, triggerKey);
+            var (interval, repeatForever, repeatCount) = GetParameters(triggerKey);
 
             if (repeatForever == true)
             {
@@ -52,20 +52,20 @@ namespace Quartz.AttributesExtension.Trigger
             return triggerBuilder.Build();
         }
 
-        private (int interval, bool? repeatForever, int repeatCount) GetParameters(JobKey jobKey, TriggerKey triggerKey)
+        private (int interval, bool? repeatForever, int repeatCount) GetParameters(TriggerKey triggerKey)
         {
-            var intervalKey = ConfigurationKeyBuilder.Build(jobKey, triggerKey, ConfigurationParamaters.Interval);
+            var intervalKey = ConfigurationKeyBuilder.Build(triggerKey, ConfigurationParamaters.Interval);
             var interval = this.configurationProvider.GetInt(intervalKey)
                 ?? throw new InvalidQuartzConfigurationException($"Unable to get interval from configuration key {intervalKey}");
 
-            var repeatForeverKey = ConfigurationKeyBuilder.Build(jobKey, triggerKey, ConfigurationParamaters.RepeatForever);
+            var repeatForeverKey = ConfigurationKeyBuilder.Build(triggerKey, ConfigurationParamaters.RepeatForever);
             var repeatForever = this.configurationProvider.GetBool(repeatForeverKey);
 
             var repeatCount = default(int);
 
             if (!repeatForever.HasValue)
             {
-                var repeatCountKey = ConfigurationKeyBuilder.Build(jobKey, triggerKey, ConfigurationParamaters.RepeatCount);
+                var repeatCountKey = ConfigurationKeyBuilder.Build(triggerKey, ConfigurationParamaters.RepeatCount);
 
                 repeatCount = this.configurationProvider.GetInt(repeatCountKey)
                     ?? throw new InvalidQuartzConfigurationException($"Unable to determine whether the job should repeat forever or on a determined count. Please make sure either {repeatForeverKey} or {repeatCountKey} are defined.");

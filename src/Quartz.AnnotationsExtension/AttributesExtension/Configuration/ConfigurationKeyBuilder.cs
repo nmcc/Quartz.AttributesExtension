@@ -6,16 +6,17 @@ namespace Quartz.AttributesExtension.Configuration
     internal static class ConfigurationKeyBuilder
     {
         // TODO: Make this configurable
-        private const string ConfigurationPrefix = "Jobs";
+        private const string JobsPrefix = "Quartz.Jobs";
+        private const string TriggerPrefix = "Quartz.Triggers";
 
-        public static string Build(JobKey jobKey, TriggerKey triggerKey, params string[] parameters)
+        public static string Build(TriggerKey triggerKey, params string[] parameters)
         {
-            if (jobKey == null) throw new ArgumentNullException(nameof(jobKey));
             if (triggerKey == null) throw new ArgumentNullException(nameof(triggerKey));
 
-            var keys = new List<string>();
-
-            AddKeys(keys, jobKey);
+            var keys = new List<string>
+            {
+                TriggerPrefix
+            };
 
             AddKeys(triggerKey, keys);
 
@@ -28,7 +29,10 @@ namespace Quartz.AttributesExtension.Configuration
         {
             if (jobKey == null) throw new ArgumentNullException(nameof(jobKey));
 
-            var keys = new List<string>();
+            var keys = new List<string>
+            {
+                JobsPrefix
+            };
 
             AddKeys(keys, jobKey);
             AddKeys(keys, parameters);
@@ -38,8 +42,6 @@ namespace Quartz.AttributesExtension.Configuration
 
         private static void AddKeys(List<string> keys, JobKey jobKey)
         {
-            keys.Add(ConfigurationPrefix);
-
             if (jobKey.Group != QuartzConstants.DefaultGroup)
                 keys.Add(jobKey.Group);
 
