@@ -5,12 +5,12 @@ namespace Quartz.AttributesExtension.Trigger
 {
     internal class CronTriggerAttributeBuilder : ITriggerBuilder
     {
-        public ITrigger BuildTrigger(ITriggerAttribute triggerAttribute, JobKey jobKey)
+        public ITrigger BuildTrigger(ITriggerAttribute triggerAttribute, JobKey jobKey, Type jobType)
         {
             var cronTrigger = triggerAttribute as CronTriggerAttribute
                 ?? throw new ArgumentException($"{nameof(triggerAttribute)} must be of type CronTriggerAttribute");
 
-            var triggerKey = BuildTriggerKey(cronTrigger);
+            var triggerKey = BuildTriggerKey(cronTrigger, jobType);
 
             // Trigger the job to run now, and then repeat every 10 seconds
             var triggerBuilder = TriggerBuilder.Create()

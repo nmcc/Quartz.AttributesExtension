@@ -24,7 +24,7 @@ namespace Quartz.AttributesExtension.Trigger
             triggerMock.Setup(t => t.Name).Returns(name);
 
             // ACT
-            var triggerKey = TriggerKeyBuilder.BuildTriggerKey(triggerMock.Object);
+            var triggerKey = TriggerKeyBuilder.BuildTriggerKey(triggerMock.Object, typeof(SampleJob));
 
             // ASSERT
             triggerKey.Should().NotBeNull();
@@ -39,13 +39,12 @@ namespace Quartz.AttributesExtension.Trigger
             triggerMock.Setup(t => t.Name).Returns<string>(null);
 
             // ACT
-            var triggerKey = TriggerKeyBuilder.BuildTriggerKey(triggerMock.Object);
+            var triggerKey = TriggerKeyBuilder.BuildTriggerKey(triggerMock.Object, typeof(SampleJob));
 
             // ASSERT
             triggerKey.Should().NotBeNull();
             triggerKey.Group.Should().Be("DEFAULT");
-            triggerKey.Name.Should().NotBeNullOrEmpty();
-            triggerKey.Name.Should().MatchRegex("^[a-f0-9-]+$");
+            triggerKey.Name.Should().Be(nameof(SampleJob));
         }
     }
 }

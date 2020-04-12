@@ -6,6 +6,10 @@ namespace Quartz
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public sealed class SimpleTriggerFromConfigAttribute : Attribute, ITriggerAttribute
     {
+        public SimpleTriggerFromConfigAttribute()
+        {
+        }
+
         public SimpleTriggerFromConfigAttribute(string name, string group = DefaultGroup)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));

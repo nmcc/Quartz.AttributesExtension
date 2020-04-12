@@ -46,7 +46,7 @@ namespace Quartz.AttributesExtension
                 .Returns(jobDataMap);
             this.triggerBuilderFactoryMock.Setup(m => m.GetTriggerBuilder(It.IsAny<SimpleTriggerFromConfigAttribute>()))
                 .Returns(triggerBuilderMock.Object);
-            this.triggerBuilderMock.Setup(m => m.BuildTrigger(It.IsAny<SimpleTriggerFromConfigAttribute>(), It.IsAny<JobKey>()))
+            this.triggerBuilderMock.Setup(m => m.BuildTrigger(It.IsAny<SimpleTriggerFromConfigAttribute>(), It.IsAny<JobKey>(), typeof(SampleJob)))
                 .Returns(triggerMock);
             this.schedulerMock.Setup(m => m.ScheduleJob(triggerMock))
                 .Returns(new DateTimeOffset());
@@ -78,7 +78,7 @@ namespace Quartz.AttributesExtension
 
             this.triggerBuilderFactoryMock.Setup(m => m.GetTriggerBuilder(It.IsAny<SimpleTriggerFromConfigAttribute>()))
                 .Returns(triggerBuilderMock.Object);
-            this.triggerBuilderMock.Setup(m => m.BuildTrigger(It.IsAny<SimpleTriggerFromConfigAttribute>(), It.IsAny<JobKey>()))
+            this.triggerBuilderMock.Setup(m => m.BuildTrigger(It.IsAny<SimpleTriggerFromConfigAttribute>(), It.IsAny<JobKey>(), typeof(SampleJob)))
                 .Returns(triggerMock);
             this.schedulerMock.Setup(m => m.ScheduleJob(triggerMock))
                 .Returns(new DateTimeOffset());

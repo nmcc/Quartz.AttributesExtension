@@ -23,12 +23,12 @@ namespace Quartz.AttributesExtension.Trigger
             this.configurationProvider = configurationProvider ?? throw new ArgumentNullException(nameof(configurationProvider));
         }
 
-        public ITrigger BuildTrigger(ITriggerAttribute triggerAttribute, JobKey jobKey)
+        public ITrigger BuildTrigger(ITriggerAttribute triggerAttribute, JobKey jobKey, Type jobType)
         {
             var cronTrigger = triggerAttribute as CronTriggerFromConfigAttribute
                 ?? throw new ArgumentException($"{nameof(triggerAttribute)} must be of type CronTriggerFromConfigAttribute");
 
-            var triggerKey = BuildTriggerKey(cronTrigger);
+            var triggerKey = BuildTriggerKey(cronTrigger, jobType);
 
             var triggerBuilder = TriggerBuilder.Create()
                 .WithIdentity(triggerKey)

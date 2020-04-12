@@ -19,7 +19,6 @@ namespace Quartz.AttributesExtension.Configuration
             };
 
             AddKeys(triggerKey, keys);
-
             AddKeys(keys, parameters);
 
             return string.Join(".", keys);

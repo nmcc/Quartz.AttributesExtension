@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Quartz.AttributesExtension.Trigger
 {
-    public class CronTriggerFromConfigAttributeBuilderTests
+    public class CronTriggerFromConfigAttributeBuilderTests : IDisposable
     {
         private const string CronExpression = "0/10 * * * * ? *";
         private readonly JobKey jobKey = new JobKey("job1");
@@ -16,8 +16,13 @@ namespace Quartz.AttributesExtension.Trigger
 
         public CronTriggerFromConfigAttributeBuilderTests()
         {
-            this.configurationProviderMock = new Mock<IConfigurationProvider>();
+            this.configurationProviderMock = new Mock<IConfigurationProvider>(MockBehavior.Strict);
             this.subject = new CronTriggerFromConfigAttributeBuilder(configurationProviderMock.Object);
+        }
+
+        public void Dispose()
+        {
+            this.configurationProviderMock.VerifyAll();
         }
 
         [Fact]
@@ -27,7 +32,25 @@ namespace Quartz.AttributesExtension.Trigger
             configurationProviderMock.Setup(m => m.GetString("Quartz.Triggers.trigger1.Cron")).Returns(CronExpression);
 
             // ACT
-            var trigger = subject.BuildTrigger(new CronTriggerFromConfigAttribute("trigger1"), jobKey);
+            var trigger = subject.BuildTrigger(new CronTriggerFromConfigAttribute("trigger1"), jobKey, this.GetType());
+
+            // ASSERT
+            trigger.Should().NotBeNull();
+            trigger.Should().BeOfType<CronTriggerImpl>();
+
+            var cronTrigger = trigger as CronTriggerImpl;
+            cronTrigger.JobKey.Should().Be(jobKey);
+            cronTrigger.CronExpressionString.Should().Be(CronExpression);
+        }
+
+        [Fact]
+        public void DefaultCtor()
+        {
+            // ARRANGE
+            configurationProviderMock.Setup(m => m.GetString("Quartz.Triggers.CronTriggerFromConfigAttributeBuilderTests.Cron")).Returns(CronExpression);
+
+            // ACT
+            var trigger = subject.BuildTrigger(new CronTriggerFromConfigAttribute(), jobKey, this.GetType());
 
             // ASSERT
             trigger.Should().NotBeNull();
@@ -45,7 +68,7 @@ namespace Quartz.AttributesExtension.Trigger
             configurationProviderMock.Setup(m => m.GetString("Quartz.Triggers.trigger1.Cron")).Returns((string)null);
 
             // ACT
-            Action action = () => subject.BuildTrigger(new CronTriggerFromConfigAttribute("trigger1"), jobKey);
+            Action action = () => subject.BuildTrigger(new CronTriggerFromConfigAttribute("trigger1"), jobKey, this.GetType());
 
             // ASSERT
             action.Should().Throw<InvalidQuartzConfigurationException>()

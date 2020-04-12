@@ -6,6 +6,10 @@ namespace Quartz
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public sealed class CronTriggerFromConfigAttribute : Attribute, ITriggerAttribute
     {
+        public CronTriggerFromConfigAttribute()
+        {
+        }
+
         public CronTriggerFromConfigAttribute(string name, string group = DefaultGroup)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
