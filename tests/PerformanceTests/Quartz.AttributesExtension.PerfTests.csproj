@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Quartz.AnnotationsExtension\Quartz.AttributesExtension.csproj" />
+    <ProjectReference Include="..\..\src\Quartz.AttributesExtension\Quartz.AttributesExtension.csproj" />
   </ItemGroup>
 
 </Project>

@@ -84,8 +84,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Quartz.AnnotationsExtension\Quartz.AttributesExtension.csproj">
-      <Project>{a7764b47-3f42-4a23-9ad5-cf0d97aad808}</Project>
+    <ProjectReference Include="..\..\src\Quartz.AttributesExtension\Quartz.AttributesExtension.csproj">
+      <Project>{ab86fffc-7fe7-4a4b-aecd-d3c7b5cb153d}</Project>
       <Name>Quartz.AttributesExtension</Name>
     </ProjectReference>
   </ItemGroup>
