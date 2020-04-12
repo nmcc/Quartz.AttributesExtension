@@ -12,9 +12,10 @@ namespace Quartz.AttributesExtension.Reflection
             var jobs = JobLocator.GetAllJobsInAppDomain();
 
             // ASSERT
-            jobs.Should().HaveCount(2);
+            jobs.Should().HaveCount(3);
             jobs.Should().ContainSingle(t => t.Name == typeof(SampleJob).Name);
             jobs.Should().ContainSingle(t => t.Name == typeof(SampleJob2).Name);
+            jobs.Should().ContainSingle(t => t.Name == typeof(InterruptableJob).Name);
         }
     }
 }

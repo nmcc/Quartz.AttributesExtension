@@ -3,6 +3,7 @@
     [Job]
     internal class InterruptableJob : IInterruptableJob
     {
+        [JobData]
         public string Message { get; set; }
 
         public void Execute(IJobExecutionContext context)

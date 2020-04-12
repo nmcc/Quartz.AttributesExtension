@@ -38,5 +38,19 @@ namespace Quartz.AttributesExtension.JobData
             jobDataMap.GetInt(nameof(SampleJob.IntParam)).Should().Be(10);
             jobDataMap.GetBoolean(nameof(SampleJob.BoolParam)).Should().Be(true);
         }
+
+        [Fact]
+        public void InterruptableJob_Test()
+        {
+            // ARRANGE
+            this.configurationProviderMock.Setup(m => m.GetString("Quartz.Jobs.InterruptableJob.Message")).Returns("Hello world");
+
+            // ACT
+            var jobDataMap = this.subject.Build(typeof(InterruptableJob), new JobKey(nameof(InterruptableJob)));
+
+            // ASSERT
+            jobDataMap.Should().NotBeNull();
+            jobDataMap.GetString(nameof(InterruptableJob.Message)).Should().Be("Hello world");
+        }
     }
 }
