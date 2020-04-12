@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Quartz.AttributesExtension.Trigger
+﻿namespace Quartz.AttributesExtension.Trigger
 {
     internal class TriggerBuilderFactory : ITriggerBuilderFactory
     {

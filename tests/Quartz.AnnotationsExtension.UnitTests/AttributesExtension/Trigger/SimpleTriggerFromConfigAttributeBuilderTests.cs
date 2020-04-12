@@ -32,7 +32,7 @@ namespace Quartz.AttributesExtension.Trigger
             configurationProviderMock.Setup(m => m.GetBool("Quartz.Triggers.trigger1.RepeatForever")).Returns(true);
 
             // ACT
-            var trigger = subject.BuildTrigger(new SimpleTriggerFromConfigAttribute("trigger1"), jobKey);
+            var trigger = subject.BuildTrigger(new SimpleTriggerFromConfigAttribute("trigger1"), jobKey, typeof(SampleJob));
 
             // ASSERT
             trigger.Should().NotBeNull();
@@ -53,7 +53,7 @@ namespace Quartz.AttributesExtension.Trigger
             configurationProviderMock.Setup(m => m.GetInt("Quartz.Triggers.trigger1.RepeatCount")).Returns(100);
 
             // ACT
-            var trigger = subject.BuildTrigger(new SimpleTriggerFromConfigAttribute("trigger1"), jobKey);
+            var trigger = subject.BuildTrigger(new SimpleTriggerFromConfigAttribute("trigger1"), jobKey, this.GetType());
 
             // ASSERT
             trigger.Should().NotBeNull();
@@ -72,7 +72,7 @@ namespace Quartz.AttributesExtension.Trigger
             configurationProviderMock.Setup(m => m.GetInt("Quartz.Triggers.trigger1.IntervalInSeconds")).Returns((int?)null);
 
             // ACT
-            Action action = () => subject.BuildTrigger(new SimpleTriggerFromConfigAttribute("trigger1"), jobKey);
+            Action action = () => subject.BuildTrigger(new SimpleTriggerFromConfigAttribute("trigger1"), jobKey, this.GetType());
 
             // ASSERT
             action.Should().ThrowExactly<InvalidQuartzConfigurationException>();
@@ -87,12 +87,32 @@ namespace Quartz.AttributesExtension.Trigger
             configurationProviderMock.Setup(m =>m.GetBool("Quartz.Triggers.trigger1.RepeatForever")).Returns((bool?)null);
 
             // ACT
-            Action action = () => subject.BuildTrigger(new SimpleTriggerFromConfigAttribute("trigger1"), jobKey);
+            Action action = () => subject.BuildTrigger(new SimpleTriggerFromConfigAttribute("trigger1"), jobKey, this.GetType());
 
             // ASSERT
             var exception = action.Should().Throw<InvalidQuartzConfigurationException>().And;
             exception.Message.Should().Contain("Quartz.Triggers.trigger1.RepeatForever");
             exception.Message.Should().Contain("Quartz.Triggers.trigger1.RepeatCount");
+        }
+
+        [Fact]
+        public void Default()
+        {
+            // ARRANGE
+            configurationProviderMock.Setup(m => m.GetInt("Quartz.Triggers.SimpleTriggerFromConfigAttributeBuilderTests.IntervalInSeconds")).Returns(10);
+            configurationProviderMock.Setup(m => m.GetBool("Quartz.Triggers.SimpleTriggerFromConfigAttributeBuilderTests.RepeatForever")).Returns(true);
+
+            // ACT
+            var trigger = subject.BuildTrigger(new SimpleTriggerFromConfigAttribute(), jobKey, this.GetType());
+
+            // ASSERT
+            trigger.Should().NotBeNull();
+            trigger.Should().BeOfType<SimpleTriggerImpl>();
+
+            var simpleTrigger = trigger as SimpleTriggerImpl;
+            simpleTrigger.JobKey.Should().Be(jobKey);
+            simpleTrigger.RepeatInterval.Should().Be(TimeSpan.FromSeconds(10));
+            simpleTrigger.RepeatCount.Should().Be(-1);
         }
     }
 }

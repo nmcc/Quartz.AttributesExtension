@@ -5,7 +5,7 @@ namespace SampleApplication
 {
     [Job(nameof(HelloJob))]
     [CronTrigger("0/10 * * * * ? *", name: "CronTrigger")]
-    [CronTriggerFromConfig("CronTriggerConfig")]
+    [CronTriggerFromConfig()]
     [SimpleTrigger(days: 0, hours: 0, minutes: 0, seconds: 10, name: "SimpleTrigger")]
     [SimpleTriggerFromConfig("SimpleTriggerConfig")]
     public class HelloJob : IJob

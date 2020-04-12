@@ -5,12 +5,12 @@ namespace Quartz.AttributesExtension.Trigger
 {
     internal sealed class SimpleTriggerAttributeBuilder : ITriggerBuilder
     {
-        public ITrigger BuildTrigger(ITriggerAttribute triggerAttribute, JobKey jobKey)
+        public ITrigger BuildTrigger(ITriggerAttribute triggerAttribute, JobKey jobKey, Type jobType)
         {
             var simpleTrigger = triggerAttribute as SimpleTriggerAttribute
                 ?? throw new ArgumentException($"{nameof(triggerAttribute)} must be of type SimpleTriggerAttribute");
 
-            var triggerKey = BuildTriggerKey(simpleTrigger);
+            var triggerKey = BuildTriggerKey(simpleTrigger, jobType);
 
             var triggerBuilder = TriggerBuilder.Create()
                 .WithIdentity(triggerKey)

@@ -14,7 +14,7 @@ namespace Quartz.AttributesExtension.Trigger
         public void HappyPath()
         {
             // ACT
-            var trigger = subject.BuildTrigger(new CronTriggerAttribute(CronExpression), jobKey);
+            var trigger = subject.BuildTrigger(new CronTriggerAttribute(CronExpression), jobKey, this.GetType());
 
             // ASSERT
             trigger.Should().NotBeNull();

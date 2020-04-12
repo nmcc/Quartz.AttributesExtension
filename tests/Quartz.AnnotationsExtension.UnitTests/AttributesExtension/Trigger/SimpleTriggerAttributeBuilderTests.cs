@@ -14,7 +14,7 @@ namespace Quartz.AttributesExtension.Trigger
         public void RepeatForever()
         {
             // ACT
-            var trigger = subject.BuildTrigger(new SimpleTriggerAttribute(0, 0, 0, 1), jobKey);
+            var trigger = subject.BuildTrigger(new SimpleTriggerAttribute(0, 0, 0, 1), jobKey, this.GetType());
 
             // ASSERT
             trigger.Should().NotBeNull();
@@ -30,7 +30,7 @@ namespace Quartz.AttributesExtension.Trigger
         public void RepeatCount()
         {
             // ACT
-            var trigger = subject.BuildTrigger(new SimpleTriggerAttribute(0, 0, 0, 1, repeatCount: 100), jobKey);
+            var trigger = subject.BuildTrigger(new SimpleTriggerAttribute(0, 0, 0, 1, repeatCount: 100), jobKey, this.GetType());
 
             // ASSERT
             trigger.Should().NotBeNull();

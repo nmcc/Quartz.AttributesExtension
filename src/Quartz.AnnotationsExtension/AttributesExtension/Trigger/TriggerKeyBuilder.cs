@@ -4,11 +4,11 @@ namespace Quartz.AttributesExtension.Trigger
 {
     internal static class TriggerKeyBuilder
     {
-        public static TriggerKey BuildTriggerKey(ITriggerAttribute triggerAttribute)
+        public static TriggerKey BuildTriggerKey(ITriggerAttribute triggerAttribute, Type jobType)
         {
             if (string.IsNullOrEmpty(triggerAttribute.Name))
             {
-                return new TriggerKey(Guid.NewGuid().ToString());
+                return new TriggerKey(jobType.Name);
             }
             else if (string.IsNullOrEmpty(triggerAttribute.Group))
             {
