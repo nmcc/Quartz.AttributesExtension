@@ -12,6 +12,7 @@
     <PackageProjectUrl>https://github.com/nmcc/Quartz.AttributesExtension</PackageProjectUrl>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
