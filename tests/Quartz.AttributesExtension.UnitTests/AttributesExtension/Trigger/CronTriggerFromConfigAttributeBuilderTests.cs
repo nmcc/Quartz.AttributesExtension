@@ -68,11 +68,10 @@ namespace Quartz.AttributesExtension.Trigger
             configurationProviderMock.Setup(m => m.GetString("Quartz.Triggers.trigger1.Cron")).Returns((string)null);
 
             // ACT
-            Action action = () => subject.BuildTrigger(new CronTriggerFromConfigAttribute("trigger1"), jobKey, this.GetType());
+            var actual = subject.BuildTrigger(new CronTriggerFromConfigAttribute("trigger1"), jobKey, this.GetType());
 
             // ASSERT
-            action.Should().Throw<InvalidQuartzConfigurationException>()
-                .And.Message.Should().Contain("Quartz.Triggers.trigger1.Cron");
+            actual.Should().BeNull();
         }
     }
 }

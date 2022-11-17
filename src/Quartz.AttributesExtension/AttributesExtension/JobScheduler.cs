@@ -79,8 +79,13 @@ namespace Quartz.AttributesExtension
                 var builder = this.triggerBuilderFactory.GetTriggerBuilder(triggerAttr)
                     ?? throw new InvalidOperationException($"No trigger builder for trigger type {triggerAttr.GetType().FullName}");
 
-                var trigger = builder.BuildTrigger(triggerAttr, jobKey, jobType)
-                    ?? throw new InvalidQuartzConfigurationException($"Unable to build trigger {triggerAttr.Group}.{triggerAttr.Name}");
+                var trigger = builder.BuildTrigger(triggerAttr, jobKey, jobType);
+
+                if (trigger == null)
+                {
+                    logger.WarnFormat("Skipping trigger for job {0}.{1}. Cron setting doesn't exist in configuration?");
+                    continue;
+                }
 
                 scheduler.ScheduleJob(trigger);
 
