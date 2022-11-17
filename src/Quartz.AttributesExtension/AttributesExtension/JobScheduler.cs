@@ -83,7 +83,7 @@ namespace Quartz.AttributesExtension
 
                 if (trigger == null)
                 {
-                    logger.WarnFormat("Skipping trigger for job {0}.{1}. Cron setting doesn't exist in configuration?", jobKey.Group, jobKey.Name);
+                    logger.Warn($"Skipping trigger for job {jobKey}. Cron setting doesn't exist in configuration?");
                     continue;
                 }
 
